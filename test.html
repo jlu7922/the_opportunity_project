@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>County Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <input id="fips-code-input" type="text" placeholder="Enter FIPS Code">
+    <button onclick="fetchData()">Get Data</button>
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        function fetchData() {
+            const countyFipsCode = document.getElementById('fips-code-input').value;
+            fetch(`/data/${countyFipsCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.months,
+                            datasets: [{
+                                label: '# of Cases',
+                                data: data.cases,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
