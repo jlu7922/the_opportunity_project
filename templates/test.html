@@ -16,13 +16,24 @@
     <canvas id="myChart" width="400" height="200"></canvas>
 
     <script>
+        let myChart; // Declare variable outside of the function
+
         function fetchData() {
-            const countyFipsCode = document.getElementById('fips-code-input').value;
-            fetch(`/data/${countyFipsCode}`)
-                .then(response => response.json())
-                .then(data => {
+            // Destroy previous chart if exists
+            if (myChart) {
+                myChart.destroy();
+            }
+            
+            const county_fips_code = document.getElementById('fips-code-input').value;
+            fetch(`http://127.0.0.1:5000/data/${county_fips_code}`) // Update the URL
+            .then(response => {
+                console.log("Response:", response);
+                return response.json();
+            })
+            .then(data => {
+            console.log("Data:", data);
                     const ctx = document.getElementById('myChart').getContext('2d');
-                    new Chart(ctx, {
+                    myChart = new Chart(ctx, { // Assign to variable
                         type: 'line',
                         data: {
                             labels: data.months,
@@ -35,6 +46,10 @@
                             }]
                         }
                     });
+                })
+                .catch(error => {
+                    console.error('An error occurred:', error);
+                    // Handle the error as needed
                 });
         }
     </script>

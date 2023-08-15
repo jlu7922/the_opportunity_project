@@ -8,31 +8,35 @@ import requests
 plt.rcParams['font.family'] = 'Times New Roman'
 
 @st.cache_data
-def load_data():
-    return pd.read_csv('geography.csv')
-
 # def load_data():
-#     # Endpoint url
-#     url = 'https://data.cdc.gov/resource/n8mc-b4w4.json'
+#     return pd.read_csv('geography.csv')
+
+def load_data(limit = 100000):
+    # Endpoint url
+    url = 'https://data.cdc.gov/resource/n8mc-b4w4.json'
     
-#     response = requests.get(url)
-
-#     # Check if the request was successful
-#     if response.status_code == 200:
-#         data = response.json()
-#         df = pd.DataFrame(data)
-
-#         # Convert 'county_fips_code' to strings
-#         df['county_fips_code'] = df['county_fips_code'].astype(str)
-
-#         # Convert 'NA' to NaN
-#         df['county_fips_code'] = pd.to_numeric(df['county_fips_code'], errors='coerce')
-
-#         return df
+    # Add query parameter for limiting results
+    params = {'$limit': limit}
     
-#     else:
-#         st.error("Failed to load data")
-#         return pd.DataFrame()
+    response = requests.get(url, params=params)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        data = response.json()
+        df = pd.DataFrame(data)
+
+        # Convert 'county_fips_code' to strings
+        df['county_fips_code'] = df['county_fips_code'].astype(str)
+
+        # Convert 'NA' to NaN
+        df['county_fips_code'] = pd.to_numeric(df['county_fips_code'], errors='coerce')
+
+        return df
+    
+    else:
+        st.error("Failed to load data")
+        return pd.DataFrame()
+
     
 
 
